@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.File;
 
 public class User implements Serializable  {
 	private int id;
@@ -17,6 +18,8 @@ public class User implements Serializable  {
 	private Donation donation;
 	private int applicationCount;
 	private DonationApplication application;
+	private ArrayList<User> userdata;
+	private ArrayList<Donation> donationList;
 	
 	public User(String name, String email, String password) {
 		Random rand = new Random();
@@ -62,18 +65,20 @@ public class User implements Serializable  {
 	
 	public boolean registerAccount(User user){
 		try
-        {    
-            //Saving of object in a file 
-            FileOutputStream file = new FileOutputStream(String.format("userdata/%s.ser",email)); 
+        {   if (loadUserData()==null) {
+        	userdata = new ArrayList<User>();
+        }
+        else {
+        	userdata = loadUserData();
+        }
+			userdata.add(user);
+			FileOutputStream file = new FileOutputStream("user");
             ObjectOutputStream out = new ObjectOutputStream(file); 
-              
-            // Method for serialization of object 
-            out.writeObject(user); 
-              
+            out.writeObject(userdata); 
             out.close(); 
             file.close(); 
-              
             System.out.println("Object has been serialized"); 
+            return true;
   
         } 
           
@@ -84,21 +89,36 @@ public class User implements Serializable  {
 		return false;
 	}
 	
-	public User logIn(String email, String password, String filepath) {
-		User user = null;
-        // Deserialization 
-        try
-        {    
-            // Reading the object from a file 
-            FileInputStream file = new FileInputStream(String.format("/userdata/%s.ser",email)); 
-            ObjectInputStream in = new ObjectInputStream(file); 
-              
-            // Method for deserialization of object 
-            user = (User)in.readObject(); 
-              
+	public Boolean logIn(String email, String password) {
+		userdata = loadUserData();
+		for (User user : userdata) { 	
+			System.out.println(user.getEmail()+email+"    "+user.getPassword()+password);
+	           if(user.getEmail().equals(email) && user.getPassword().equals(password)) {
+	        	   System.out.print("hellohello");
+	        	   return true;
+	           }
+	      }
+		return false;
+		
+	}
+	
+	public void displayDonationList(ArrayList<Donation> arrayList1) {
+		int i=1;
+		donationList=loadDonationData();
+		for (Donation donation : donationList) { 		      
+			System.out.println(i+" "+donation.getDonationTitle());
+	    }
+	}
+	
+	
+	public ArrayList<User> loadUserData() {
+		ArrayList<User> users = null;
+        try        {              
+            FileInputStream file = new FileInputStream("user"); 
+            ObjectInputStream in = new ObjectInputStream(file);                           // Method for deserialization of object 
+            users = (ArrayList<User>)in.readObject(); 
             in.close(); 
             file.close(); 
-              
             System.out.println("Object has been deserialized "); 
         } 
           
@@ -111,12 +131,51 @@ public class User implements Serializable  {
         { 
             System.out.println("ClassNotFoundException is caught"); 
         } 
-        return user;
+        return users;
 	}
 	
-//	public abstract boolean displayDonationList(ArrayList<Donation> arrayList1);
-//	public abstract Donation checkDonationDetail(Donation donationinfo);
-//	public abstract boolean linkCard(Payment payment);
+	public ArrayList<Donation> loadDonationData() {
+		ArrayList<Donation> donationlist = null;
+        try        {              
+            FileInputStream file = new FileInputStream("donation"); 
+            ObjectInputStream in = new ObjectInputStream(file);                           // Method for deserialization of object 
+            donationlist = (ArrayList<Donation>)in.readObject(); 
+              
+            in.close(); 
+            file.close(); 
+            System.out.println("Object has been deserialized "); 
+        } 
+          
+        catch(IOException ex) 
+        { 
+            System.out.println("IOException is caught"); 
+        } 
+          
+        catch(ClassNotFoundException ex) 
+        { 
+            System.out.println("ClassNotFoundException is caught"); 
+        } 
+        return donationlist;
+	}
+	public String checkDonationDetail(Donation donationinfo) {
+		if (loadDonationData()==null) {
+			return null;
+		}
+		else {
+			donationList = loadDonationData();
+			for (Donation donation : donationList) { 		      
+				if(donationinfo == donation) {
+					return donation.getDonationDescription()
+				}
+		    }
+			
+		}
+	}
+	
+	
+//	public abstract boolean linkCard(Payment payment) {
+//		
+//	}
 //	public abstract String donate(int amount);
 	
 	public void submitApplication() {
@@ -132,8 +191,12 @@ public class User implements Serializable  {
 		String amount = input.nextLine();
 		application.setInformation(govid, title, reason, amount);
 		applicationCount+=1;
+		application.saveApplication(application);
 		System.out.println("Submit Successfully");
 		input.close();
 	}
+	
+	
+	
 	
 }

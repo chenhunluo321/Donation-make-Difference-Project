@@ -8,8 +8,13 @@ public class App
 {
     public static void main( String[] args )
     {
-    	User user = new User("Ray","zhongjasessdddesdie.ruan@gmail.com","zhongjie");
-    	user.registerAccount(user);
-//    	user.logIn(email, password, filepath)
+    	User user2 = new User("Raymond","zhongjie.com","zhongjie");
+    	user2.registerAccount(user2);
+    	if(user2.logIn("zhongjie.com", "zhongjie")== true) {
+    		System.out.print("login successful");
+    	}
+    	else {
+    		System.out.print("failed");
+    	}
     }
 }

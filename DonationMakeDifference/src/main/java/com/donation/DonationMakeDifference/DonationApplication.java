@@ -1,4 +1,7 @@
 package com.donation.DonationMakeDifference;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 public class DonationApplication {
@@ -25,6 +28,29 @@ public class DonationApplication {
 		setDonationReason(reason);
 		setDonationAmount(Integer.parseInt(amount));
 		this.applicationStatus = false;
+	}
+	
+	public boolean saveApplication(DonationApplication application){
+		try
+        {    
+            //Saving of object in a file 
+            FileOutputStream file = new FileOutputStream(String.format("applications/%s.ser",application.donationTitle)); 
+            ObjectOutputStream out = new ObjectOutputStream(file); 
+              
+            // Method for serialization of object 
+            out.writeObject(application); 
+              
+            out.close(); 
+            file.close(); 
+              
+            System.out.println("Object has been serialized"); 
+        } 
+          
+        catch(IOException ex) 
+        { 
+            System.out.println("IOException is caught"); 
+        } 
+		return false;
 	}
 
 
