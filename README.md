@@ -30,7 +30,16 @@
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
-Write about 1-2 paragraphs describing the purpose of your project.
+
+A donation system that only the verified user who have passed the background
+check can initiate a new donation. Other users can only make a donation to the project they are
+interested in. There are two types of donation, one is the money and the other type is material
+resources, like, cloth, shoes, etc. The user who receive the donation need to set the total amount
+of money they need, once the donation amount reach the goal for the project, the project will be
+closed automatically. The website manager can manage user data and project data, and prove
+which users can initiate the donation. User need to register their credit card in order to make
+donation
+
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
